@@ -1,0 +1,15 @@
+[package]
+name = "git-pm"
+version = "0.1.0"
+edition = "2024"
+description = "A git CLI plugin for project management (git pm ...)"
+license = "MIT"
+repository = "https://github.com/thomasmarcel/git-pm"
+homepage = "https://github.com/thomasmarcel/git-pm"
+documentation = "https://docs.rs/git-pm"
+readme = "README.md"
+categories = ["command-line-utilities"]
+keywords = ["git", "cli", "plugin", "project-management"]
+
+[dependencies]
+clap = { version = "4.5.46", features = ["derive"] }
