@@ -1,0 +1,2 @@
+prefixes = ["feature", "bugfix", "hotfix", "release", "wip", "chore", "epic", "experiment", "docs"]
+default_prefix = "feature"
