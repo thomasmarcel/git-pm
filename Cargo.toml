@@ -1,6 +1,6 @@
 [package]
 name = "git-pm"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "A git CLI plugin for project management (git pm ...)"
 license = "MIT"
