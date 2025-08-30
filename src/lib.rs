@@ -1,3 +1,4 @@
+use deunicode::deunicode;
 use serde::Deserialize;
 use std::process::Command;
 
@@ -48,20 +49,32 @@ pub fn load_config() -> (Vec<String>, String) {
 
 pub fn sanitize_branch(input: &str) -> String {
     let mut parts = input.splitn(2, ' ');
-    let task_id = parts.next().unwrap_or("").to_string();
-    let rest = parts.next().unwrap_or("");
+    let task_id_raw = parts.next().unwrap_or("");
+    let rest_raw = parts.next().unwrap_or("");
 
-    let mut branch_rest = rest
-        .to_lowercase()
-        .chars()
-        .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
-        .collect::<String>();
+    // Ensure the task id stays uppercase (robust if user typed it lowercase)
+    let task_id = task_id_raw.to_uppercase();
 
-    while branch_rest.contains("--") {
-        branch_rest = branch_rest.replace("--", "-");
+    // Transliterate to ASCII, then lowercase
+    let normalized = deunicode(rest_raw).to_lowercase();
+
+    // Replace non-alnum with '-', keeping only [a-z0-9-]
+    let mut buf = String::with_capacity(normalized.len());
+    let mut last_dash = false;
+    for ch in normalized.chars() {
+        let c = if ch.is_ascii_alphanumeric() { ch } else { '-' };
+        if c == '-' {
+            if !last_dash {
+                buf.push('-');
+                last_dash = true;
+            }
+        } else {
+            buf.push(c);
+            last_dash = false;
+        }
     }
 
-    branch_rest = branch_rest.trim_matches('-').to_string();
+    let branch_rest = buf.trim_matches('-');
 
     if branch_rest.is_empty() {
         task_id
